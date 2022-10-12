@@ -1,6 +1,6 @@
 <?php
 
-namespace app\core;
+namespace app\lib\core;
 
 class Request
 {
@@ -18,7 +18,6 @@ class Request
     {
         $this->baseURI = $_SERVER["REQUEST_URI"];
 
-//        echo json_encode($_SERVER);
     }
 
 
