@@ -30,13 +30,13 @@ class Application
 
         $pathArr = explode("/", $requestURI);
 
-        $routerPath = PROJECT_CONTROLLER_PATH . "/" . $pathArr[1] . "Controller.php";
+
+        $routerPath = PROJECT_CONTROLLER_PATH . "/" . ucfirst($pathArr[1]) . "Controller.php";
         // 判断是否存在此路由
         is_file($routerPath) || require_once $routerPath;
+        $controller = ucfirst($pathArr[1]) . "Controller";
 
-
-        $Controller = $pathArr[1] . "Controller";
-        new  $Controller() . index();
+        new  $controller() . index();
     }
 
 
