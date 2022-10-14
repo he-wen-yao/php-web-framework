@@ -11,10 +11,8 @@ final  class App
         self::_init_constant();
         self::_create_dir();
         self::_load_core_file();
-
         Application::Run();
     }
-
 
     /**
      * 初始化常量
@@ -69,6 +67,7 @@ final  class App
         $file_path_arr = array(
             FUNCTION_PATH . "/fun.php",
             CORE_PATH . "/Application.php",
+            CORE_PATH . "/Controller.php",
             CORE_PATH . "/Request.php",
         );
         foreach ($file_path_arr as $file_path) {

@@ -6,6 +6,9 @@ namespace app\lib\core;
 
 class Application
 {
+
+    public static $currRouterPath = "";
+
     /**
      * 启动应用
      */
@@ -13,9 +16,7 @@ class Application
     {
         self::_init();
         self::_set_url();
-        echo __CLASS__;
         spl_autoload_register(array(__CLASS__, '_autoload'));
-
         self::_create_demo();
         self::_dispatch_router();
     }
@@ -27,16 +28,13 @@ class Application
     public static function _dispatch_router()
     {
         $requestURI = $_SERVER["REQUEST_URI"];
-
         $pathArr = explode("/", $requestURI);
-
-
-        $routerPath = PROJECT_CONTROLLER_PATH . "/" . ucfirst($pathArr[1]) . "Controller.php";
-        // 判断是否存在此路由
-        is_file($routerPath) || require_once $routerPath;
-        $controller = ucfirst($pathArr[1]) . "Controller";
-
-        new  $controller() . index();
+        $controller = ucfirst($pathArr[count($pathArr) - 1]) . "Controller";
+        $pathArr = array_splice($pathArr, 1, count($pathArr) - 1);
+        self::$currRouterPath = join("/", $pathArr);
+        $c = new  $controller();
+        $defaultRouter = C("DEFAULT_ROUTER");
+        echo $c->$defaultRouter();
     }
 
 
@@ -65,6 +63,7 @@ str;
      */
     private static function _autoload($className)
     {
+        require_once PROJECT_CONTROLLER_PATH . "/" . $className . ".php";
     }
 
     /***
@@ -86,7 +85,7 @@ str;
     private static function _init()
     {
         // 加载默认配置
-        C(include CONFIG_PATH . "/config.php");
+        C(require_once CONFIG_PATH . "/config.php");
 
         $projectConfigPath = PROJECT_CONFIG_PATH . "/config.php";
         $projectConfig = <<<str
@@ -97,7 +96,7 @@ return array(
 str;
         is_file($projectConfigPath) || file_put_contents($projectConfigPath, $projectConfig);
         // 加载用户配置，后置加载保证用户配置覆盖默认配置
-        C(include $projectConfigPath);
+        C(require_once $projectConfigPath);
 
         // 设置时区
         date_default_timezone_set(C('DEFAULT_TIMEZONE'));
